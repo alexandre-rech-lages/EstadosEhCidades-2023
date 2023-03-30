@@ -10,35 +10,34 @@ namespace EstadosEhCidades.ConsoleApp
     //https://pt.stackoverflow.com/questions/146048/qual-%C3%A9-a-diferen%C3%A7a-entre-n-e-r-n-caracteres-especiais-para-quebra-de-linh
     internal class Program
     {
-        static void Main(string[] args)
+        static string[] ObterCidadesEhEstados(string caminhoDoArquivo)
         {
-            //precisamos ler o arquivo
+            const int POSICAO_CIDADE = 2;
+            const int POSICAO_ESTADO = 3;
 
-            string caminhoArquivo = @"D:\Projetos Visual Studio\2023\EstadosEhCidades\EstadosEhCidades.ConsoleApp\Dados\Cidades.csv";
-            string arquivo = File.ReadAllText(caminhoArquivo);
-
-            //precisamos pegar as linhas do arquivo
+            string arquivo = File.ReadAllText(caminhoDoArquivo);
 
             string[] linhas = arquivo.Split("\r\n");
 
-            //pegar a cidade e o estado : "Lages; Santa Catarina"
-
             string[] cidadesEhEstados = new string[linhas.Length];
 
-            int posicaoCidade = 2;
-            int posicaoEstado = 3;
-            
             int j = 0;
             for (int i = 1; i < linhas.Length; i++)
             {
                 string[] colunas = linhas[i].Split(";");
 
-                cidadesEhEstados[j] = colunas[posicaoCidade] + ";" + colunas[posicaoEstado];
+                cidadesEhEstados[j] = colunas[POSICAO_CIDADE] + ";" + colunas[POSICAO_ESTADO];
 
                 j++;
             }
 
-            //mostrar cidades agrupadas pela letra
+            return cidadesEhEstados;
+        }
+
+        static void MostrarCidadesAgrupadasPelaPrimeiraLetra(string[] cidadesEhEstados)
+        {
+            Console.Clear();
+
             char[] alfabeto = new char[]
             {
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -63,17 +62,19 @@ namespace EstadosEhCidades.ConsoleApp
                     }
                 }
             }
+        }
 
+        static void MostrarCidadesAgrupadasPorEstado(string[] cidadesEhEstados)
+        {
             Console.Clear();
-
             string[] estados = new string[]
-            {
+               {
                 "Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará", "Distrito Federal",
                 "Espírito Santo", "Goiás", "Maranhão", "Mato Grosso", "Mato Grosso do Sul",
                 "Minas Gerais", "Pará", "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro",
                 "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima", "Santa Catarina",
                 "São Paulo", "Sergipe", "Tocantins"
-            };
+               };
 
             for (int i = 0; i < estados.Length; i++)
             {
@@ -83,7 +84,7 @@ namespace EstadosEhCidades.ConsoleApp
                 Console.WriteLine($"\nCidades do estado: {estado}\n");
 
                 for (int x = 0; x < cidadesEhEstados.Length; x++)
-                { 
+                {
                     if (cidadesEhEstados[x] != null && cidadesEhEstados[x].Contains(estado))
                     {
                         int posicaoInicioEstado = cidadesEhEstados[x].IndexOf(";");
@@ -92,6 +93,27 @@ namespace EstadosEhCidades.ConsoleApp
                     }
                 }
             }
+        }
+        
+        static void Main(string[] args)
+        {
+            string caminhoArquivo = @"Dados\Cidades.csv";
+
+            string[] cidadesEhEstados = ObterCidadesEhEstados(caminhoArquivo);
+
+            Console.WriteLine("Menu de Escolha:");
+
+            Console.WriteLine("Digite 1 para apresentar as cidades agrupadas pela primeira letra:");
+
+            Console.WriteLine("Digite 2 para apresentar as cidades agrupadas por estado:");
+
+            string opcao = Console.ReadLine();
+
+            if (opcao == "1")
+                MostrarCidadesAgrupadasPelaPrimeiraLetra(cidadesEhEstados);
+
+            else if (opcao == "2")
+                MostrarCidadesAgrupadasPorEstado(cidadesEhEstados);
 
             Console.ReadLine();
         }
